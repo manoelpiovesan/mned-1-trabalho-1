@@ -12,7 +12,6 @@ var dataSetsA = []
 var dataSetsB = []
 var dataSetsC = []
 
-var rkData = []
 
 function rungeKutta3(){
     var A = parseFloat(document.querySelector('#ca-init').value)
@@ -140,7 +139,7 @@ function rungeKutta3(){
             scales: {
                 x: {
                     min: 0,
-                    max:70
+                    max:200
                 }
             }
             }
@@ -156,7 +155,7 @@ function rungeKutta3(){
             scales: {
                 x: {
                     min: 0,
-                    max:70
+                    max:200
                 }
             }
             }
@@ -172,7 +171,7 @@ function rungeKutta3(){
                 scales: {
                     x: {
                         min: 0,
-                        max:70
+                        max:200
                     }
                 }
             }
@@ -182,6 +181,23 @@ function rungeKutta3(){
     }
 
     
+}
+
+document.querySelector('#print-a').addEventListener('click', ()=>{
+    printChart(myChartA)
+})
+document.querySelector('#print-b').addEventListener('click', ()=>{
+    printChart(myChartB)
+})
+document.querySelector('#print-c').addEventListener('click', ()=>{
+    printChart(myChartC)
+})
+
+function printChart(chart){
+    var a = document.createElement('a');
+    a.href = chart.toBase64Image();
+    a.download = 'chart.png';
+    a.click();
 }
 
 

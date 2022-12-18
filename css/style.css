@@ -29,3 +29,8 @@ html,body{
     flex-direction: column;
     width: 50vw;
 }
+
+.print-icon{
+    width: 2rem;
+    margin-top: none;
+}
