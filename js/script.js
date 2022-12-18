@@ -1,70 +1,189 @@
 
-const alpha = 2 // 0 a 9
-const beta = 5 // 0 a 9
-const gama = 7 // 0 a 9
 
-const A = 12 // 10 a  99
-const B = 0 // fixo
-const C = 45 // 10 a 99
-
-const t = 0
-const tMax = 5 // 1 a 9
-var deltaT = 0.001
-
-var cA = A
-var cB = B
-var cC = C
-
-document.querySelector("#btn-rungekutta").addEventListener('click', ()=>{
-    rungeKuttaIII(alpha, beta, gama, cA, cB, cC, deltaT)
+document.querySelector('#btn-rk').addEventListener('click',  ()=>{
+    rungeKutta3()
 })
 
-let f = {
-    dcAdt: (alpha, cA, cB, cC)=>{
-        return ((-alpha*cA*cC) + cB)
-    },
-    dcBdt: (beta, cA, cB, cC)=>{
-        return ((beta*cA*cC) - cB)
-    },
-    dcCdt: (gama, cA, cB, cC)=>{
-        return ((-gama*cA*cC)+cB-(2*cC))
+var myChartA, myChartB, myChartC
+var cores = ['red', 'blue', 'green', 'orange', 'purple', 'yellow', 'black', 'pink']
+var points = ['circle', 'cross', 'dash', 'rect', 'star', 'triangle','circle', 'cross', 'dash', 'rect', 'star', 'triangle']
+
+var dataSetsA = []
+var dataSetsB = []
+var dataSetsC = []
+
+var rkData = []
+
+function rungeKutta3(){
+    var A = parseFloat(document.querySelector('#ca-init').value)
+    var B =  parseFloat(document.querySelector('#cb-init').value)
+    var C =  parseFloat(document.querySelector('#cc-init').value)
+    
+    const alpha =  parseFloat(document.querySelector('#alpha-init').value)
+    const beta =  parseFloat(document.querySelector('#beta-init').value)
+    const gama =  parseFloat(document.querySelector('#gama-init').value)
+    
+    const deltaT = parseFloat(document.querySelector('#deltat').value)
+    const tZero = parseInt(document.querySelector('#tzero').value)
+    const tMax = parseInt(document.querySelector('#tmax').value)
+    
+    var dfdx = {
+        a: (cA, cB, cC) => {return ((-alpha*cA*cC)+cB)},
+        b: (cA, cB, cC) => {return ((beta*cA*cC)-cB)},
+        c: (cA, cB, cC) => {return ((-gama*cA*cC)+cB-(2*cC))}
     }
+    
+
+    var coordsCa = []
+    var coordsCb = []
+    var coordsCc = []
+
+    var coordsCaLabels = []
+    var coordsCbLabels = []
+    var coordsCcLabels = []
+
+    var cA = A;
+    var cB = B;
+    var cC = C;
+    
+    for(var i = tZero; i < tMax; i = i + deltaT){
+        
+        var k1a = dfdx.a(cA, cB, cC)
+        var k1b = dfdx.b(cA, cB, cC)
+        var k1c = dfdx.c(cA, cB, cC)
+        
+        var k2a = dfdx.a((cA + ((k1a*deltaT) / 2)), (cB + ((k1b*deltaT) / 2)), (cC + ((k1c*deltaT)/ 2)))
+        var k2b = dfdx.b((cA + ((k1a*deltaT) / 2)), (cB + ((k1b*deltaT) / 2)), (cC + ((k1c*deltaT)/ 2)))
+        var k2c = dfdx.c((cA + ((k1a*deltaT) / 2)), (cB + ((k1b*deltaT) / 2)), (cC + ((k1c*deltaT)/ 2)))
+
+        var k3a = dfdx.a((cA - (k1a*deltaT)+(2*k2a*deltaT)),(cB - (k1b*deltaT)+(2*k2b*deltaT)),(cC - (k1c*deltaT)+(2*k2c*deltaT)))
+        var k3b = dfdx.b((cA - (k1a*deltaT)+(2*k2a*deltaT)),(cB - (k1b*deltaT)+(2*k2b*deltaT)),(cC - (k1c*deltaT)+(2*k2c*deltaT)))
+        var k3c = dfdx.c((cA - (k1a*deltaT)+(2*k2a*deltaT)),(cB - (k1b*deltaT)+(2*k2b*deltaT)),(cC - (k1c*deltaT)+(2*k2c*deltaT)))
+    
+        var rk3a = cA + ((1/6) * (k1a + (4*k2a) + k3a) * deltaT)
+        var rk3b = cB + ((1/6) * (k1b + (4*k2b) + k3b) * deltaT)
+        var rk3c = cC + ((1/6) * (k1c + (4*k2c) + k3c) * deltaT)
+        
+        cA = rk3a
+        cB = rk3b
+        cC = rk3c
+
+        console.log(i, rk3a)
+
+        coordsCa.push({x: i, y:rk3a})
+        coordsCb.push({x: i, y:rk3b})
+        coordsCc.push({x: i, y:rk3c})
+
+        coordsCaLabels.push(i.toFixed(4))
+        coordsCbLabels.push(i.toFixed(4))
+        coordsCcLabels.push(i.toFixed(4))
+
+    }
+
+    if(myChartA != undefined){
+        if(document.querySelector('#hold-chart').value == 0){
+            dataSetsA = []
+            dataSetsB = []
+            dataSetsC = []
+        }
+    }
+
+    dataSetsA.push({
+        label: `Ca: Δt:${deltaT}`,
+        data: coordsCa,
+        borderWidth: 1,
+        pointStyle: points[dataSetsC.length], 
+        borderColor: cores[dataSetsC.length],
+    })
+
+    dataSetsB.push({
+        label: `Cb: Δt:${deltaT}`,
+        data: coordsCb,
+        borderWidth: 1,
+        pointStyle: points[dataSetsC.length], 
+        borderColor: cores[dataSetsC.length],
+    })
+
+    dataSetsC.push({
+        label: `Cc: Δt:${deltaT}`,
+        data: coordsCc,
+        borderWidth: 1,
+        pointStyle: points[dataSetsC.length], 
+        borderColor: cores[dataSetsC.length],
+    })
+
+    if(myChartA != undefined){
+        if(document.querySelector('#hold-chart').value == 1){
+            myChartA.update()
+            myChartB.update()
+            myChartC.update()
+        }
+    }
+
+// --------- chart js config
+// init chart Ca
+
+    const ctxA = document.getElementById('myChartA');
+    const ctxB = document.getElementById('myChartB');
+    const ctxC = document.getElementById('myChartC');
+
+    
+
+    if((myChartA == undefined)){
+        myChartB = new Chart(ctxB, {
+            type: 'line',
+            data: {
+            labels: coordsCbLabels,
+            datasets: dataSetsB
+            },
+            options: {
+            scales: {
+                x: {
+                    min: 0,
+                    max:70
+                }
+            }
+            }
+        });
+    
+        myChartC = new Chart(ctxC, {
+            type: 'line',
+            data: {
+            labels: coordsCcLabels,
+            datasets: dataSetsC
+            },
+            options: {
+            scales: {
+                x: {
+                    min: 0,
+                    max:70
+                }
+            }
+            }
+        });
+    
+        myChartA = new Chart(ctxA, {
+            type: 'line',
+            data: {
+            labels: coordsCaLabels,
+            datasets: dataSetsA
+            },
+            options: {
+                scales: {
+                    x: {
+                        min: 0,
+                        max:70
+                    }
+                }
+            }
+        });
+    }else{
+        
+    }
+
+    
 }
 
 
 
-function rungeKuttaIII(alpha, beta, gama, cA, cB, cC, deltaT){
 
-    var fnA = cA 
-    var fnB = cB 
-    var fnC = cC 
-
-    var k1A = f.dcAdt(alpha, cA, cB, cC)
-    var k1B = f.dcBdt(beta, cA, cB, cC)
-    var k1C = f.dcBdt(gama, cA, cB, cC)
-
-    var k2A = f.dcAdt(alpha, (cA + ((k1A*deltaT)/2)), cB, cC)
-    var k2B = f.dcAdt(beta, (cA + ((k1B*deltaT)/2)), cB, cC)
-    var k2C = f.dcAdt(gama, (cA + ((k1C*deltaT)/2)), cB, cC)
-
-    var k3A = f.dcAdt(alpha, (cA - (k1A*deltaT) + (2*k2A*deltaT)), cB, cC)
-    var k3B = f.dcAdt(beta, (cA - (k1B*deltaT) + (2*k2B*deltaT)), cB, cC)
-    var k3C = f.dcAdt(gama, (cA - (k1C*deltaT) + (2*k2C*deltaT)), cB, cC)
-
-
-    for(var temp = t; temp < tMax; temp += deltaT){
-
-        console.log(`Calculando para t = ${temp.toFixed(6)}:`)
-
-        fnA = fnA + ((1/6) * (k1A + (4 * k2A) + k3A) * deltaT)
-        fnB = fnB + ((1/6) * (k1B + (4 * k2B) + k3B) * deltaT)
-        fnC = fnC + ((1/6) * (k1C + (4 * k2C) + k3C) * deltaT)
-
-        console.log(`f(${temp.toFixed(6)})A = ${fnA}`)
-        console.log(`f(${temp.toFixed(6)})B = ${fnB}`)
-        console.log(`f(${temp.toFixed(6)})C = ${fnC}`)
-
-    }
-
-
-}
