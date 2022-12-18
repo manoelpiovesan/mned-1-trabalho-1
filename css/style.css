@@ -15,19 +15,24 @@ html,body{
 }
 
 #myChartA,#myChartB,#myChartC{ 
-    width: 50vw;
+    max-width: 70vw;
+    width: 70vw;
     border: 1px solid rgb(174, 174, 174);
     border-radius: 0.5rem;
     margin-bottom: 2rem;
 }
 
-
+.row-main{
+    display: flex;
+    flex-direction: column;
+}
 
 .charts{
     height: auto;
     display: flex;
     flex-direction: column;
-    width: 50vw;
+    align-items: center;
+    width: 90vw;
 }
 
 .print-icon{
