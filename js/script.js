@@ -4,6 +4,10 @@ document.querySelector('#btn-rk').addEventListener('click',  ()=>{
     rungeKutta3()
 })
 
+document.querySelector('#btn-print-a').addEventListener('click',  ()=>{
+    print(a)
+})
+
 var myChartA, myChartB, myChartC
 var cores = ['red', 'blue', 'green', 'orange', 'purple', 'yellow', 'black', 'pink']
 var points = ['circle', 'cross', 'dash', 'rect', 'star', 'triangle','circle', 'cross', 'dash', 'rect', 'star', 'triangle']
@@ -139,7 +143,7 @@ function rungeKutta3(){
             scales: {
                 x: {
                     min: 0,
-                    max:200
+                    max:70
                 }
             }
             }
@@ -155,7 +159,7 @@ function rungeKutta3(){
             scales: {
                 x: {
                     min: 0,
-                    max:200
+                    max:70
                 }
             }
             }
@@ -171,7 +175,7 @@ function rungeKutta3(){
                 scales: {
                     x: {
                         min: 0,
-                        max:200
+                        max:70
                     }
                 }
             }
@@ -183,23 +187,15 @@ function rungeKutta3(){
     
 }
 
-document.querySelector('#print-a').addEventListener('click', ()=>{
-    printChart(myChartA)
-})
-document.querySelector('#print-b').addEventListener('click', ()=>{
-    printChart(myChartB)
-})
-document.querySelector('#print-c').addEventListener('click', ()=>{
-    printChart(myChartC)
-})
 
-function printChart(chart){
+function print(chart){
     var a = document.createElement('a');
     a.href = chart.toBase64Image();
-    a.download = 'chart.png';
+    a.download = `chart.png`;
+
+    // Trigger the download
     a.click();
 }
-
 
 
 
